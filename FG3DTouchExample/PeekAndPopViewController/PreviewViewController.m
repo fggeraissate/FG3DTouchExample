@@ -39,8 +39,8 @@
 - (NSArray<id<UIPreviewActionItem>> *)previewActionItems {
 
     // setup a list of preview actions
-    UIPreviewAction *action1 = [UIPreviewAction actionWithTitle:@"Action 1" style:UIPreviewActionStyleDefault handler:^(UIPreviewAction * _Nonnull action, UIViewController * _Nonnull previewViewController) {
-        NSLog(@"Action 1 triggered");
+    UIPreviewAction *action1 = [UIPreviewAction actionWithTitle:@"Action" style:UIPreviewActionStyleDefault handler:^(UIPreviewAction * _Nonnull action, UIViewController * _Nonnull previewViewController) {
+        NSLog(@"Action triggered");
     }];
     
     UIPreviewAction *action2 = [UIPreviewAction actionWithTitle:@"Destructive Action" style:UIPreviewActionStyleDestructive handler:^(UIPreviewAction * _Nonnull action, UIViewController * _Nonnull previewViewController) {

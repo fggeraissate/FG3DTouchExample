@@ -12,7 +12,7 @@
 #import "PreviewViewController.h"
 
 @interface AppDelegate ()
-
+@property (nonatomic, strong) NSDictionary *dictVc;
 @end
 
 @implementation AppDelegate
@@ -65,6 +65,29 @@
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
 }
 
+#pragma mark - Lazzy Init
+
+- (NSDictionary *)dictVc {
+    
+    if (!_dictVc) {
+        
+        PreviewViewController *vcPreview1 = [PreviewViewController new];
+        [vcPreview1.label setText:@"Preview ViewController 1 \n\n Press to return"];
+        
+        PreviewViewController *vcPreview2 = [PreviewViewController new];
+        [vcPreview2.label setText:@"Preview ViewController 2 \n\n Press to return"];
+        
+        PreviewViewController *vcPreview3 = [PreviewViewController new];
+        [vcPreview3.label setText:@"Preview ViewController 3 \n\n Press to return"];
+        
+        _dictVc = @{@"type1": vcPreview1,
+                    @"type2": vcPreview2,
+                    @"type3": vcPreview3};
+    }
+    
+    return _dictVc;
+}
+
 #pragma mark - View Controller
 
 - (void)baseVc:(UIViewController *)vcBase lauchVcWithShortcutItem:(UIApplicationShortcutItem *)shortcutItem {
@@ -78,26 +101,17 @@
 
 - (UIViewController *)viewControllerToBeLauched:(UIApplicationShortcutItem *)shortcutItem {
     
-    UIViewController *vc;
-    
-    PreviewViewController *vcPreview1 = [PreviewViewController new];
-    [vcPreview1.label setText:@"Preview ViewController 1 \n\n Press to return"];
-    PreviewViewController *vcPreview2 = [PreviewViewController new];
-    [vcPreview2.label setText:@"Preview ViewController 2 \n\n Press to return"];
-    PreviewViewController *vcPreview3 = [PreviewViewController new];
-    [vcPreview3.label setText:@"Preview ViewController 3 \n\n Press to return"];
-    
-    NSDictionary *dictVc = @{@"type1": vcPreview1, @"type2": vcPreview2, @"type3": vcPreview3};
+    UIViewController *vcLaunched;
     
     if (shortcutItem) {
         NSLog(@"We've launched from shortcut item: %@", shortcutItem.localizedTitle);
-        vc = [dictVc objectForKey:shortcutItem.type];
+        vcLaunched = [self.dictVc objectForKey:shortcutItem.type];
         
     } else {
         NSLog(@"We've launched properly.");
     }
     
-    return vc;
+    return vcLaunched;
 }
 
 #pragma mark - Dynamic Shortcut Items
@@ -107,9 +121,11 @@
     NSArray *arrayDynamicShortcutItems = [self arrayOfDynamicShortcutItemsWithIcons];
     //    NSArray *arrayDynamicShortcutItems = [self arrayOfDynamicShortcutItems];
     
-//    // Do this in case we have also static shortcut items
-//    NSArray *existingItems = [UIApplication sharedApplication].shortcutItems;
-//    NSArray *updatedItems = [existingItems arrayByAddingObjectsFromArray:arrayDynamicShortcutItems];
+    /*
+    // Do this in case we have also static shortcut items
+    NSArray *existingItems = [UIApplication sharedApplication].shortcutItems;
+    NSArray *updatedItems = [existingItems arrayByAddingObjectsFromArray:arrayDynamicShortcutItems];
+    */
     
     [[UIApplication sharedApplication] setShortcutItems:arrayDynamicShortcutItems];
 }
