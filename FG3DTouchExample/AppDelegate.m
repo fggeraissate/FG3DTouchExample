@@ -118,72 +118,36 @@
 
 - (void)createDynamicShortcut {
     
-    NSArray *arrayDynamicShortcutItems = [self arrayOfDynamicShortcutItemsWithIcons];
-    //    NSArray *arrayDynamicShortcutItems = [self arrayOfDynamicShortcutItems];
-    
-    /*
-    // Do this in case we have also static shortcut items
-    NSArray *existingItems = [UIApplication sharedApplication].shortcutItems;
-    NSArray *updatedItems = [existingItems arrayByAddingObjectsFromArray:arrayDynamicShortcutItems];
-    */
+    NSArray *arrayDynamicShortcutItems = [self arrayOfDynamicShortcutItems];
     
     [[UIApplication sharedApplication] setShortcutItems:arrayDynamicShortcutItems];
+
 }
 
 - (NSArray *)arrayOfDynamicShortcutItems {
     
+    UIApplicationShortcutIcon *icon2 = [UIApplicationShortcutIcon iconWithType:UIApplicationShortcutIconTypeMail];
+    UIApplicationShortcutIcon *icon3 = [UIApplicationShortcutIcon iconWithTemplateImageName:@"iCon3"];
+
     UIApplicationShortcutItem *shortcutItem1 = [[UIApplicationShortcutItem alloc]
                                                 initWithType:@"type1"
-                                                localizedTitle:@"Title 1"];
+                                                localizedTitle:@"Dynamic Title 1"];
     
-    UIApplicationShortcutItem *shortcutItem2 = [[UIApplicationShortcutItem alloc]
-                                                initWithType:@"type2"
-                                                localizedTitle:@"Title 2"];
-    
-    UIApplicationShortcutItem *shortcutItem3 = [[UIApplicationShortcutItem alloc]
-                                                initWithType:@"type3"
-                                                localizedTitle:@"Title 3"];
-    
-    NSArray *array = @[shortcutItem1, shortcutItem2, shortcutItem3];
-    
-    return array;
-}
-
-- (NSArray *)arrayOfDynamicShortcutItemsWithIcons {
-    
-    // System Images
-    UIApplicationShortcutIcon *icon1 = [UIApplicationShortcutIcon iconWithType:UIApplicationShortcutIconTypeLove];
-    UIApplicationShortcutIcon *icon2 = [UIApplicationShortcutIcon iconWithType:UIApplicationShortcutIconTypeMail];
-    UIApplicationShortcutIcon *icon3 = [UIApplicationShortcutIcon iconWithType:UIApplicationShortcutIconTypeProhibit];
-    
-    /* // My own images
-     UIApplicationShortcutIcon *icon1 = [UIApplicationShortcutIcon iconWithTemplateImageName:@"iCon1"];
-     UIApplicationShortcutIcon *icon2 = [UIApplicationShortcutIcon iconWithTemplateImageName:@"iCon2"];
-     UIApplicationShortcutIcon *icon3 = [UIApplicationShortcutIcon iconWithTemplateImageName:@"iCon3"];
-     */
-    
-    UIMutableApplicationShortcutItem *item1 = [[UIMutableApplicationShortcutItem alloc]
-                                               initWithType:@"type1"
-                                               localizedTitle:@"Title 1"
-                                               localizedSubtitle:@"Subtitle 1"
-                                               icon:icon1
-                                               userInfo:nil];
-    
-    UIMutableApplicationShortcutItem *item2 = [[UIMutableApplicationShortcutItem alloc]
+    UIMutableApplicationShortcutItem *shortcutItem2 = [[UIMutableApplicationShortcutItem alloc]
                                                initWithType:@"type2"
-                                               localizedTitle:@"Title 2"
-                                               localizedSubtitle:@"Subtitle 2"
+                                               localizedTitle:@"Dynamic Title 2"
+                                               localizedSubtitle:@"Dynamic Subtitle 2"
                                                icon:icon2
                                                userInfo:nil];
     
-    UIMutableApplicationShortcutItem *item3 = [[UIMutableApplicationShortcutItem alloc]
+    UIMutableApplicationShortcutItem *shortcutItem3 = [[UIMutableApplicationShortcutItem alloc]
                                                initWithType:@"type3"
-                                               localizedTitle:@"Title 3"
-                                               localizedSubtitle:@"Subtitle 3"
+                                               localizedTitle:@"Dynamic Title 3"
+                                               localizedSubtitle:@"Dynamic Subtitle 3"
                                                icon:icon3
                                                userInfo:nil];
     
-    NSArray *array = @[item1, item2, item3];
+    NSArray *array = @[shortcutItem1, shortcutItem2, shortcutItem3];
     
     return array;
 }
