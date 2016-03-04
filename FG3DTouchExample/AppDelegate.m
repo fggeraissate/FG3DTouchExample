@@ -9,6 +9,7 @@
 #import "AppDelegate.h"
 
 #import "PeekAndPopViewController.h"
+#import "PreviewViewController.h"
 
 @interface AppDelegate ()
 
@@ -20,13 +21,26 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
     
-    PeekAndPopViewController *vc = [PeekAndPopViewController new];
+    [self createDynamicShortcut];
+    
+    UIApplicationShortcutItem *shortcutItem = [launchOptions valueForKey:UIApplicationLaunchOptionsShortcutItemKey];
+    UIViewController *vc = [PeekAndPopViewController new];
+    [self baseVc:vc lauchVcWithShortcutItem:shortcutItem];
     
     self.window = [[UIWindow alloc] initWithFrame:UIScreen.mainScreen.bounds];
     [self.window setRootViewController:vc];
     [self.window makeKeyAndVisible];
 
     return YES;
+}
+
+- (void)application:(UIApplication *)application performActionForShortcutItem:(nonnull UIApplicationShortcutItem *)shortcutItem completionHandler:(nonnull void (^)(BOOL))completionHandler {
+    
+    // react to shortcut item selections
+    NSLog(@"A shortcut item was pressed. It was %@.", shortcutItem.localizedTitle);
+    
+    UIViewController *vc = self.window.rootViewController;
+    [self baseVc:vc lauchVcWithShortcutItem:shortcutItem];
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application {
@@ -49,6 +63,113 @@
 
 - (void)applicationWillTerminate:(UIApplication *)application {
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
+}
+
+#pragma mark - View Controller
+
+- (void)baseVc:(UIViewController *)vcBase lauchVcWithShortcutItem:(UIApplicationShortcutItem *)shortcutItem {
+    
+    UIViewController *vcLaunched = [self viewControllerToBeLauched:shortcutItem];
+    
+    if (vcBase!=nil && vcLaunched!=nil) {
+        [vcBase showViewController:vcLaunched sender:vcBase];
+    }
+}
+
+- (UIViewController *)viewControllerToBeLauched:(UIApplicationShortcutItem *)shortcutItem {
+    
+    UIViewController *vc;
+    
+    PreviewViewController *vcPreview1 = [PreviewViewController new];
+    [vcPreview1.label setText:@"Preview ViewController 1 \n\n Press to return"];
+    PreviewViewController *vcPreview2 = [PreviewViewController new];
+    [vcPreview2.label setText:@"Preview ViewController 2 \n\n Press to return"];
+    PreviewViewController *vcPreview3 = [PreviewViewController new];
+    [vcPreview3.label setText:@"Preview ViewController 3 \n\n Press to return"];
+    
+    NSDictionary *dictVc = @{@"type1": vcPreview1, @"type2": vcPreview2, @"type3": vcPreview3};
+    
+    if (shortcutItem) {
+        NSLog(@"We've launched from shortcut item: %@", shortcutItem.localizedTitle);
+        vc = [dictVc objectForKey:shortcutItem.type];
+        
+    } else {
+        NSLog(@"We've launched properly.");
+    }
+    
+    return vc;
+}
+
+#pragma mark - Dynamic Shortcut Items
+
+- (void)createDynamicShortcut {
+    
+    NSArray *arrayDynamicShortcutItems = [self arrayOfDynamicShortcutItemsWithIcons];
+    //    NSArray *arrayDynamicShortcutItems = [self arrayOfDynamicShortcutItems];
+    
+//    // Do this in case we have also static shortcut items
+//    NSArray *existingItems = [UIApplication sharedApplication].shortcutItems;
+//    NSArray *updatedItems = [existingItems arrayByAddingObjectsFromArray:arrayDynamicShortcutItems];
+    
+    [[UIApplication sharedApplication] setShortcutItems:arrayDynamicShortcutItems];
+}
+
+- (NSArray *)arrayOfDynamicShortcutItems {
+    
+    UIApplicationShortcutItem *shortcutItem1 = [[UIApplicationShortcutItem alloc]
+                                                initWithType:@"type1"
+                                                localizedTitle:@"Title 1"];
+    
+    UIApplicationShortcutItem *shortcutItem2 = [[UIApplicationShortcutItem alloc]
+                                                initWithType:@"type2"
+                                                localizedTitle:@"Title 2"];
+    
+    UIApplicationShortcutItem *shortcutItem3 = [[UIApplicationShortcutItem alloc]
+                                                initWithType:@"type3"
+                                                localizedTitle:@"Title 3"];
+    
+    NSArray *array = @[shortcutItem1, shortcutItem2, shortcutItem3];
+    
+    return array;
+}
+
+- (NSArray *)arrayOfDynamicShortcutItemsWithIcons {
+    
+    // System Images
+    UIApplicationShortcutIcon *icon1 = [UIApplicationShortcutIcon iconWithType:UIApplicationShortcutIconTypeLove];
+    UIApplicationShortcutIcon *icon2 = [UIApplicationShortcutIcon iconWithType:UIApplicationShortcutIconTypeMail];
+    UIApplicationShortcutIcon *icon3 = [UIApplicationShortcutIcon iconWithType:UIApplicationShortcutIconTypeProhibit];
+    
+    /* // My own images
+     UIApplicationShortcutIcon *icon1 = [UIApplicationShortcutIcon iconWithTemplateImageName:@"iCon1"];
+     UIApplicationShortcutIcon *icon2 = [UIApplicationShortcutIcon iconWithTemplateImageName:@"iCon2"];
+     UIApplicationShortcutIcon *icon3 = [UIApplicationShortcutIcon iconWithTemplateImageName:@"iCon3"];
+     */
+    
+    UIMutableApplicationShortcutItem *item1 = [[UIMutableApplicationShortcutItem alloc]
+                                               initWithType:@"type1"
+                                               localizedTitle:@"Title 1"
+                                               localizedSubtitle:@"Subtitle 1"
+                                               icon:icon1
+                                               userInfo:nil];
+    
+    UIMutableApplicationShortcutItem *item2 = [[UIMutableApplicationShortcutItem alloc]
+                                               initWithType:@"type2"
+                                               localizedTitle:@"Title 2"
+                                               localizedSubtitle:@"Subtitle 2"
+                                               icon:icon2
+                                               userInfo:nil];
+    
+    UIMutableApplicationShortcutItem *item3 = [[UIMutableApplicationShortcutItem alloc]
+                                               initWithType:@"type3"
+                                               localizedTitle:@"Title 3"
+                                               localizedSubtitle:@"Subtitle 3"
+                                               icon:icon3
+                                               userInfo:nil];
+    
+    NSArray *array = @[item1, item2, item3];
+    
+    return array;
 }
 
 @end

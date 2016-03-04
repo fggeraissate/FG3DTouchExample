@@ -30,7 +30,6 @@
 
 - (void)tapGestureAction:(id)sender {
     
-    // dismiss this view controller
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
