@@ -8,13 +8,8 @@
 
 #import <UIKit/UIKit.h>
 
-@protocol PreviewViewControllerDelegate <NSObject>
-- (void)previewViewControllerTapToDismiss:(UIViewController *)vc;
-@end
-
 @interface PreviewViewController : UIViewController
 
-@property (nonatomic, strong) id<PreviewViewControllerDelegate>delegate;
 @property (nonatomic, strong) UILabel *label;
 
 @end

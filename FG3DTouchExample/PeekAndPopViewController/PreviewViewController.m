@@ -26,17 +26,6 @@
     // Dispose of any resources that can be recreated.
 }
 
-#pragma mark - Actions
-
-- (void)tapGestureAction:(id)sender {
-    
-    if (self.delegate && [self.delegate respondsToSelector:@selector(previewViewControllerTapToDismiss:)]) {
-        [self.delegate previewViewControllerTapToDismiss:self];
-    }
-    
-    [self dismissViewControllerAnimated:YES completion:nil];
-}
-
 #pragma mark - Preview Actions (Overriding)
 
 - (NSArray<id<UIPreviewActionItem>> *)previewActionItems {
@@ -77,9 +66,6 @@
     [self.view setBackgroundColor:[UIColor greenColor]];
     
     [self.label setText:@"Preview ViewController"];
-    
-    UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(tapGestureAction:)];
-    [self.view addGestureRecognizer:tapGesture];
 }
 
 #pragma mark - Lazzy Init

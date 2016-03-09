@@ -9,8 +9,9 @@
 #import "PeekAndPopViewController.h"
 
 #import "PreviewViewController.h"
+#import "AppDelegate.h"
 
-@interface PeekAndPopViewController () <UIViewControllerPreviewingDelegate, PreviewViewControllerDelegate>
+@interface PeekAndPopViewController () <UIViewControllerPreviewingDelegate>
 @property (nonatomic, strong) id previewingContext;
 @property (nonatomic, strong) UIViewController *vcPresented;
 @end
@@ -78,11 +79,11 @@
      commitViewController:(UIViewController *)viewControllerToCommit {
     
     PreviewViewController *vcPreview = (PreviewViewController *)viewControllerToCommit;
-    [vcPreview.label setText:@"Preview ViewController \n\n Press to return"];
+    [vcPreview.label setText:@"Preview ViewController"];
     
     self.vcPresented = vcPreview;
     
-    [self.navigationController presentViewController:vcPreview animated:YES completion:nil];
+    [self.navigationController pushViewController:vcPreview animated:YES ];
 }
 
 #pragma mark - PreviewViewControllerDelegate
@@ -92,22 +93,9 @@
     self.vcPresented = nil;
 }
 
-#pragma mark - NSNotificationCenter
-
-- (void)notificationHandler:(NSNotification *)notification {
-    
-    if (self.vcPresented) {
-        [self.vcPresented dismissViewControllerAnimated:NO completion:^{
-            self.vcPresented = nil;
-        }];
-    }
-}
-
 #pragma mark - Initial Setup 
 
 - (void)initialSetup {
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(notificationHandler:) name:@"dismissVC" object:nil];
     
     [self.view setBackgroundColor:[UIColor redColor]];
     

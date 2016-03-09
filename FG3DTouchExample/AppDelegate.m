@@ -13,10 +13,10 @@
 #import "PeekAndPopViewController.h"
 
 @interface AppDelegate ()
-@property (nonatomic, strong) UIApplicationShortcutItem *launchedShortcutItem;
+@property (nonatomic, strong) UIApplicationShortcutItem *shortcutItemLaunched;
+
 @property (nonatomic, strong) NSDictionary *dictVc;
 @property (nonatomic, strong) UINavigationController *navVc;
-@property (nonatomic, strong) NSNotificationCenter *notification;
 @end
 
 @implementation AppDelegate
@@ -47,10 +47,10 @@
     
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
     
-    if (self.launchedShortcutItem != nil) {
+    if (self.shortcutItemLaunched != nil) {
         
-        [self lauchVcWithShortcutItem:self.launchedShortcutItem];
-        self.launchedShortcutItem = nil;
+        [self lauchVcWithShortcutItem:self.shortcutItemLaunched];
+        self.shortcutItemLaunched = nil;
     }
 }
 
@@ -93,16 +93,16 @@
     if (!_dictVc) {
         
         PreviewViewController *vcPreview1 = [PreviewViewController new];
-        [vcPreview1.label setText:@"Preview ViewController 1 \n\n Press to return"];
+        [vcPreview1.label setText:@"Preview ViewController 1"];
         
         PreviewViewController *vcPreview2 = [PreviewViewController new];
-        [vcPreview2.label setText:@"Preview ViewController 2 \n\n Press to return"];
+        [vcPreview2.label setText:@"Preview ViewController 2"];
         
         PreviewViewController *vcPreview3 = [PreviewViewController new];
-        [vcPreview3.label setText:@"Preview ViewController 3 \n\n Press to return"];
+        [vcPreview3.label setText:@"Preview ViewController 3"];
         
         PreviewViewController *vcPreview4 = [PreviewViewController new];
-        [vcPreview4.label setText:@"Preview ViewController 4 \n\n Press to return"];
+        [vcPreview4.label setText:@"Preview ViewController 4"];
         
         _dictVc = @{@"type1": vcPreview1,
                     @"type2": vcPreview2,
@@ -136,12 +136,10 @@
         return NO;
     }
     
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"dismissVC" object:nil];
-    
     [self.navVc popToRootViewControllerAnimated:NO];
     [self.navVc pushViewController:[PeekAndPopViewController new] animated:NO];
-    [self.navVc presentViewController:vcLaunched animated:NO completion:nil];
-    
+    [self.navVc pushViewController:vcLaunched animated:NO];
+
     return YES;
 }
 
@@ -171,7 +169,7 @@
     // If a shortcut was launched, display its information and take the appropriate action
     if (shortcutItem != nil) {
         
-        self.launchedShortcutItem = shortcutItem;
+        self.shortcutItemLaunched = shortcutItem;
         
         aShortcutWasLaunched = YES;
     }
