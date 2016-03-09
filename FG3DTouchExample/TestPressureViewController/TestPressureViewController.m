@@ -1,22 +1,17 @@
 //
-//  PeekAndPopViewController.m
+//  TestPressureViewController.m
 //  FG3DTouchExample
 //
-//  Created by Fernanda Geraissate on 03/03/16.
+//  Created by Fernanda Geraissate on 09/03/16.
 //  Copyright © 2016 Fernanda G. Geraissate. All rights reserved.
 //
 
-#import "PeekAndPopViewController.h"
+#import "TestPressureViewController.h"
 
-#import "PreviewViewController.h"
-#import "AppDelegate.h"
-
-@interface PeekAndPopViewController () <UIViewControllerPreviewingDelegate>
-@property (nonatomic, strong) id previewingContext;
-@property (nonatomic, strong) UIViewController *vcPresented;
+@interface TestPressureViewController ()
 @end
 
-@implementation PeekAndPopViewController
+@implementation TestPressureViewController
 
 #pragma mark - Lifecycle
 
@@ -52,57 +47,68 @@
     
     [super traitCollectionDidChange:previousTraitCollection];
     
-    // Register for `UIViewControllerPreviewingDelegate` to enable "Peek" and "Pop".
-    if ([self is3DTouchAvailable]) {
+    if (![self is3DTouchAvailable]) {
         
-        self.previewingContext = [self registerForPreviewingWithDelegate:self sourceView:self.view];
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Atention!" message:@"3D Touch not available" preferredStyle:UIAlertControllerStyleAlert];
         
-    } else if (self.previewingContext) {
+        UIAlertAction *ok = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+            [alert dismissViewControllerAnimated:YES completion:nil];
+        }];
         
-        [self unregisterForPreviewingWithContext:self.previewingContext];
-        self.previewingContext = nil;
+        [alert addAction:ok];
+        
+        [self presentViewController:alert animated:YES completion:nil];
     }
 }
 
-#pragma mark - UIViewControllerPreviewingDelegate
+#pragma mark - Touch
 
-// Peek...
-- (UIViewController *)previewingContext:(id<UIViewControllerPreviewing>)previewingContext
-              viewControllerForLocation:(CGPoint)location {
+- (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
     
-    PreviewViewController *vcPreview = [PreviewViewController new];
-    
-    return vcPreview;
+    [self handleTouches:touches];
 }
 
-// ... and Pop
-- (void)previewingContext:(id<UIViewControllerPreviewing>)previewingContext
-     commitViewController:(UIViewController *)viewControllerToCommit {
+- (void)touchesMoved:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
     
-    PreviewViewController *vcPreview = (PreviewViewController *)viewControllerToCommit;
-    [vcPreview.label setText:@"Preview ViewController"];
-    
-    self.vcPresented = vcPreview;
-    
-    [self.navigationController pushViewController:vcPreview animated:YES ];
+    [self handleTouches:touches];
 }
 
-#pragma mark - PreviewViewControllerDelegate
-
-- (void)previewViewControllerTapToDismiss:(UIViewController *)vc {
+- (void)touchesCancelled:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
     
-    self.vcPresented = nil;
+   [self labelTextWithFloat:0.];
 }
 
-#pragma mark - Initial Setup 
+- (void)touchesEnded:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
+    
+    [self labelTextWithFloat:0.];
+}
+
+- (void)handleTouches:(NSSet<UITouch *> *)touches{
+    
+    if ([self is3DTouchAvailable]) {
+        
+        UITouch *touch = [touches.allObjects objectAtIndex:0];
+        
+        CGFloat force = touch.force;
+        CGFloat percentage = force/touch.maximumPossibleForce;
+        [self labelTextWithFloat:percentage];
+    }
+}
+
+- (void)labelTextWithFloat:(CGFloat)floatNumber {
+    
+    [self.label setText:[NSString stringWithFormat:@"%f %%", floatNumber]];
+}
+
+#pragma mark - Initial Setup
 
 - (void)initialSetup {
     
-    [self setTitle:@"Peek and Pop"];
+    [self setTitle:@"Pressure Gradient"];
     
-    [self.view setBackgroundColor:[UIColor redColor]];
+    [self.view setBackgroundColor:[UIColor whiteColor]];
     
-    [self.label setText:@"Press to Peek and Pop"];
+    [self labelTextWithFloat:0.];
 }
 
 #pragma mark - Lazzy Init

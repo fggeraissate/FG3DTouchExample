@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		9D10E8831C90AE1C003A73D6 /* TestPressureViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9D10E8821C90AE1C003A73D6 /* TestPressureViewController.m */; };
 		9DD3BA551C88B76000540E32 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 9DD3BA541C88B76000540E32 /* main.m */; };
 		9DD3BA581C88B76000540E32 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 9DD3BA571C88B76000540E32 /* AppDelegate.m */; };
 		9DD3BA601C88B76100540E32 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9DD3BA5F1C88B76100540E32 /* Assets.xcassets */; };
@@ -17,6 +18,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		9D10E8811C90AE1C003A73D6 /* TestPressureViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestPressureViewController.h; sourceTree = "<group>"; };
+		9D10E8821C90AE1C003A73D6 /* TestPressureViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestPressureViewController.m; sourceTree = "<group>"; };
 		9D64898C1C8F8B5B0058080D /* ChooseViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChooseViewController.h; sourceTree = "<group>"; };
 		9DD3BA501C88B76000540E32 /* FG3DTouchExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FG3DTouchExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9DD3BA541C88B76000540E32 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -43,6 +46,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		9D10E8801C90AE07003A73D6 /* TestPressureViewController */ = {
+			isa = PBXGroup;
+			children = (
+				9D10E8811C90AE1C003A73D6 /* TestPressureViewController.h */,
+				9D10E8821C90AE1C003A73D6 /* TestPressureViewController.m */,
+			);
+			path = TestPressureViewController;
+			sourceTree = "<group>";
+		};
 		9DD3BA471C88B76000540E32 = {
 			isa = PBXGroup;
 			children = (
@@ -66,6 +78,7 @@
 				9DD3BA571C88B76000540E32 /* AppDelegate.m */,
 				9DD828261C8DEBAC00B3319E /* ChooseViewController */,
 				9DD3BA6E1C88B9B100540E32 /* PeekAndPopViewController */,
+				9D10E8801C90AE07003A73D6 /* TestPressureViewController */,
 				9DD3BA5F1C88B76100540E32 /* Assets.xcassets */,
 				9DD3BA611C88B76100540E32 /* LaunchScreen.storyboard */,
 				9DD3BA641C88B76100540E32 /* Info.plist */,
@@ -175,6 +188,7 @@
 				9DD828291C8DEBD100B3319E /* ChooseViewController.m in Sources */,
 				9DD3BA581C88B76000540E32 /* AppDelegate.m in Sources */,
 				9DD3BA711C88B9CA00540E32 /* PeekAndPopViewController.m in Sources */,
+				9D10E8831C90AE1C003A73D6 /* TestPressureViewController.m in Sources */,
 				9DD3BA551C88B76000540E32 /* main.m in Sources */,
 				9DD3BA741C88DA1300540E32 /* PreviewViewController.m in Sources */,
 			);

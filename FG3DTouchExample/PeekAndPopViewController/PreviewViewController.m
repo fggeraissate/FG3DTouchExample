@@ -63,6 +63,8 @@
 
 - (void)initialSetup {
     
+    [self setTitle:@"Preview"];
+    
     [self.view setBackgroundColor:[UIColor greenColor]];
     
     [self.label setText:@"Preview ViewController"];

@@ -9,6 +9,7 @@
 #import "ChooseViewController.h"
 
 #import "PeekAndPopViewController.h"
+#import "TestPressureViewController.h"
 
 @interface ChooseViewController ()
 @property (nonatomic, strong) UIButton *buttonPeekAndPop;
@@ -40,6 +41,7 @@
 
 - (void)buttonTestPressureAction:(id)sender {
     
+    [self.navigationController pushViewController:[TestPressureViewController new] animated:YES];
 }
 
 #pragma mark - Initial Setup
