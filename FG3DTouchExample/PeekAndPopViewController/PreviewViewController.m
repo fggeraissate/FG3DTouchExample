@@ -30,9 +30,12 @@
 
 - (void)tapGestureAction:(id)sender {
     
+    if (self.delegate && [self.delegate respondsToSelector:@selector(previewViewControllerTapToDismiss:)]) {
+        [self.delegate previewViewControllerTapToDismiss:self];
+    }
+    
     [self dismissViewControllerAnimated:YES completion:nil];
 }
-
 
 #pragma mark - Preview Actions (Overriding)
 

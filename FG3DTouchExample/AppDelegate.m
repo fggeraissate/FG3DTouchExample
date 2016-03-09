@@ -8,39 +8,64 @@
 
 #import "AppDelegate.h"
 
-#import "PeekAndPopViewController.h"
 #import "PreviewViewController.h"
+#import "ChooseViewController.h"
+#import "PeekAndPopViewController.h"
 
 @interface AppDelegate ()
+@property (nonatomic, strong) UIApplicationShortcutItem *launchedShortcutItem;
 @property (nonatomic, strong) NSDictionary *dictVc;
+@property (nonatomic, strong) UINavigationController *navVc;
+@property (nonatomic, strong) NSNotificationCenter *notification;
 @end
 
 @implementation AppDelegate
 
+#pragma mark - AppDelegate Methods
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
     
-    [self createDynamicShortcut];
-    
-    UIApplicationShortcutItem *shortcutItem = [launchOptions valueForKey:UIApplicationLaunchOptionsShortcutItemKey];
-    UIViewController *vc = [PeekAndPopViewController new];
-    [self baseVc:vc lauchVcWithShortcutItem:shortcutItem];
+    // 1) Setting rootViewController
     
     self.window = [[UIWindow alloc] initWithFrame:UIScreen.mainScreen.bounds];
-    [self.window setRootViewController:vc];
+    [self.window setRootViewController:self.navVc];
     [self.window makeKeyAndVisible];
+    
+    // 2) Create a dynamic shortcut
+    
+    [self createDynamicShortcut];
+    
+    // 3) Check if a shortcut was launched. If it does, this will block "performActionForShortcutItem:completionHandler" from being called.
+    
+    BOOL shouldPerformAdditionalDelegateHandling = ![self checkIfAShortcutWasLaunched:launchOptions];
 
-    return YES;
+    return shouldPerformAdditionalDelegateHandling;
 }
+
+- (void)applicationDidBecomeActive:(UIApplication *)application {
+    
+    // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+    
+    if (self.launchedShortcutItem != nil) {
+        
+        [self lauchVcWithShortcutItem:self.launchedShortcutItem];
+        self.launchedShortcutItem = nil;
+    }
+}
+
+/*
+ Called when the user activates your application by selecting a shortcut on the home screen, except when
+ application(_:,willFinishLaunchingWithOptions:) or application(_:didFinishLaunchingWithOptions) returns `false`.
+ You should handle the shortcut in those callbacks and return `false` if possible. In that case, this
+ callback is used if your application is already launched in the background.
+ */
 
 - (void)application:(UIApplication *)application performActionForShortcutItem:(nonnull UIApplicationShortcutItem *)shortcutItem completionHandler:(nonnull void (^)(BOOL))completionHandler {
     
-    // react to shortcut item selections
-    NSLog(@"A shortcut item was pressed. It was %@.", shortcutItem.localizedTitle);
+    BOOL handledShortCutItem = [self lauchVcWithShortcutItem:shortcutItem];
     
-    UIViewController *vc = self.window.rootViewController;
-    [self baseVc:vc lauchVcWithShortcutItem:shortcutItem];
+    completionHandler(handledShortCutItem);
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application {
@@ -55,10 +80,6 @@
 
 - (void)applicationWillEnterForeground:(UIApplication *)application {
     // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
-}
-
-- (void)applicationDidBecomeActive:(UIApplication *)application {
-    // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application {
@@ -80,23 +101,48 @@
         PreviewViewController *vcPreview3 = [PreviewViewController new];
         [vcPreview3.label setText:@"Preview ViewController 3 \n\n Press to return"];
         
+        PreviewViewController *vcPreview4 = [PreviewViewController new];
+        [vcPreview4.label setText:@"Preview ViewController 4 \n\n Press to return"];
+        
         _dictVc = @{@"type1": vcPreview1,
                     @"type2": vcPreview2,
-                    @"type3": vcPreview3};
+                    @"type3": vcPreview3,
+                    @"type4": vcPreview4};
     }
     
     return _dictVc;
 }
 
+- (UINavigationController *)navVc {
+    
+    if (!_navVc) {
+        _navVc = [[UINavigationController alloc] initWithRootViewController:[ChooseViewController new]];
+    }
+    
+    return _navVc;
+}
+
 #pragma mark - View Controller
 
-- (void)baseVc:(UIViewController *)vcBase lauchVcWithShortcutItem:(UIApplicationShortcutItem *)shortcutItem {
+- (BOOL)lauchVcWithShortcutItem:(UIApplicationShortcutItem *)shortcutItem {
+    
+    if (shortcutItem.type == nil) {
+        return NO;
+    }
     
     UIViewController *vcLaunched = [self viewControllerToBeLauched:shortcutItem];
     
-    if (vcBase!=nil && vcLaunched!=nil) {
-        [vcBase showViewController:vcLaunched sender:vcBase];
+    if (vcLaunched == nil) {
+        return NO;
     }
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"dismissVC" object:nil];
+    
+    [self.navVc popToRootViewControllerAnimated:NO];
+    [self.navVc pushViewController:[PeekAndPopViewController new] animated:NO];
+    [self.navVc presentViewController:vcLaunched animated:NO completion:nil];
+    
+    return YES;
 }
 
 - (UIViewController *)viewControllerToBeLauched:(UIApplicationShortcutItem *)shortcutItem {
@@ -114,14 +160,37 @@
     return vcLaunched;
 }
 
+#pragma mark - Check If a Shortcut Was Launched
+
+- (BOOL)checkIfAShortcutWasLaunched:(NSDictionary *)launchOptions {
+    
+    BOOL aShortcutWasLaunched = NO;
+    
+    UIApplicationShortcutItem *shortcutItem = [launchOptions valueForKey:UIApplicationLaunchOptionsShortcutItemKey];
+    
+    // If a shortcut was launched, display its information and take the appropriate action
+    if (shortcutItem != nil) {
+        
+        self.launchedShortcutItem = shortcutItem;
+        
+        aShortcutWasLaunched = YES;
+    }
+    
+    return aShortcutWasLaunched;
+}
+
 #pragma mark - Dynamic Shortcut Items
 
 - (void)createDynamicShortcut {
     
-    NSArray *arrayDynamicShortcutItems = [self arrayOfDynamicShortcutItems];
+    NSArray *shortcutItems = [UIApplication sharedApplication].shortcutItems;
     
-    [[UIApplication sharedApplication] setShortcutItems:arrayDynamicShortcutItems];
-
+    // Install initial versions of our extra dynamic shortcuts.
+    if (shortcutItems == nil || shortcutItems.count == 0) {
+        
+        // Update the application providing the initial 'dynamic' shortcut items.
+        [[UIApplication sharedApplication] setShortcutItems:[self arrayOfDynamicShortcutItems]];
+    }
 }
 
 - (NSArray *)arrayOfDynamicShortcutItems {
