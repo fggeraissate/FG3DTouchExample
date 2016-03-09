@@ -52,6 +52,7 @@
     
     [super traitCollectionDidChange:previousTraitCollection];
     
+    // Register for `UIViewControllerPreviewingDelegate` to enable "Peek" and "Pop".
     if ([self is3DTouchAvailable]) {
         
         self.previewingContext = [self registerForPreviewingWithDelegate:self sourceView:self.view];
