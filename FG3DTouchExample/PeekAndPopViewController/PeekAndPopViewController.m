@@ -13,7 +13,6 @@
 
 @interface PeekAndPopViewController () <UIViewControllerPreviewingDelegate>
 @property (nonatomic, strong) id previewingContext;
-@property (nonatomic, strong) UIViewController *vcPresented;
 @end
 
 @implementation PeekAndPopViewController
@@ -82,16 +81,7 @@
     PreviewViewController *vcPreview = (PreviewViewController *)viewControllerToCommit;
     [vcPreview.label setText:@"Preview ViewController"];
     
-    self.vcPresented = vcPreview;
-    
     [self.navigationController pushViewController:vcPreview animated:YES ];
-}
-
-#pragma mark - PreviewViewControllerDelegate
-
-- (void)previewViewControllerTapToDismiss:(UIViewController *)vc {
-    
-    self.vcPresented = nil;
 }
 
 #pragma mark - Initial Setup 
