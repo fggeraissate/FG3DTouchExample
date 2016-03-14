@@ -14,7 +14,6 @@
 
 @interface AppDelegate ()
 @property (nonatomic, strong) UIApplicationShortcutItem *shortcutItemLaunched;
-
 @property (nonatomic, strong) NSDictionary *dictVc;
 @property (nonatomic, strong) UINavigationController *navVc;
 @end
@@ -27,18 +26,13 @@
     // Override point for customization after application launch.
     
     // 1) Setting rootViewController
-    
-    self.window = [[UIWindow alloc] initWithFrame:UIScreen.mainScreen.bounds];
-    [self.window setRootViewController:self.navVc];
-    [self.window makeKeyAndVisible];
+    [self updateRootViewController];
     
     // 2) Create a dynamic shortcut
-    
     [self createDynamicShortcut];
     
-    // 3) Check if a shortcut was launched. If it does, this will block "performActionForShortcutItem:completionHandler" from being called.
-    
-    BOOL shouldPerformAdditionalDelegateHandling = ![self checkIfAShortcutWasLaunched:launchOptions];
+    // 3) Check if a shortcut was launched. If it does, this will block "application:performActionForShortcutItem:completionHandler:" from being called.
+    BOOL shouldPerformAdditionalDelegateHandling = ![self checkIfAShortcutWasLaunchedAndSetItInAGlobalParam:launchOptions];
 
     return shouldPerformAdditionalDelegateHandling;
 }
@@ -92,22 +86,34 @@
     
     if (!_dictVc) {
         
-        PreviewViewController *vcPreview1 = [PreviewViewController new];
-        [vcPreview1.label setText:@"Preview ViewController 1"];
+        UIViewController *(^blockVc1)() = ^ UIViewController *(){
+            PreviewViewController *vcPreview1 = [PreviewViewController new];
+            [vcPreview1.label setText:@"Preview ViewController 1"];
+            return vcPreview1;
+        };
         
-        PreviewViewController *vcPreview2 = [PreviewViewController new];
-        [vcPreview2.label setText:@"Preview ViewController 2"];
+        UIViewController *(^blockVc2)() = ^ UIViewController *(){
+            PreviewViewController *vcPreview1 = [PreviewViewController new];
+            [vcPreview1.label setText:@"Preview ViewController 2"];
+            return vcPreview1;
+        };
         
-        PreviewViewController *vcPreview3 = [PreviewViewController new];
-        [vcPreview3.label setText:@"Preview ViewController 3"];
+        UIViewController *(^blockVc3)() = ^ UIViewController *(){
+            PreviewViewController *vcPreview1 = [PreviewViewController new];
+            [vcPreview1.label setText:@"Preview ViewController 3"];
+            return vcPreview1;
+        };
         
-        PreviewViewController *vcPreview4 = [PreviewViewController new];
-        [vcPreview4.label setText:@"Preview ViewController 4"];
+        UIViewController *(^blockVc4)() = ^ UIViewController *(){
+            PreviewViewController *vcPreview1 = [PreviewViewController new];
+            [vcPreview1.label setText:@"Preview ViewController 4"];
+            return vcPreview1;
+        };
         
-        _dictVc = @{@"type1": vcPreview1,
-                    @"type2": vcPreview2,
-                    @"type3": vcPreview3,
-                    @"type4": vcPreview4};
+        _dictVc = @{@"type1": blockVc1,
+                    @"type2": blockVc2,
+                    @"type3": blockVc3,
+                    @"type4": blockVc4};
     }
     
     return _dictVc;
@@ -122,7 +128,16 @@
     return _navVc;
 }
 
-#pragma mark - View Controller
+#pragma mark - Root View Controller
+
+- (void)updateRootViewController {
+    
+    self.window = [[UIWindow alloc] initWithFrame:UIScreen.mainScreen.bounds];
+    [self.window setRootViewController:self.navVc];
+    [self.window makeKeyAndVisible];
+}
+
+#pragma mark - View Controller to be Launched
 
 - (BOOL)lauchVcWithShortcutItem:(UIApplicationShortcutItem *)shortcutItem {
     
@@ -149,7 +164,8 @@
     
     if (shortcutItem) {
         NSLog(@"We've launched from shortcut item: %@", shortcutItem.localizedTitle);
-        vcLaunched = [self.dictVc objectForKey:shortcutItem.type];
+        UIViewController *(^blockVc)() = [self.dictVc objectForKey:shortcutItem.type];
+        vcLaunched = blockVc();
         
     } else {
         NSLog(@"We've launched properly.");
@@ -160,7 +176,7 @@
 
 #pragma mark - Check If a Shortcut Was Launched
 
-- (BOOL)checkIfAShortcutWasLaunched:(NSDictionary *)launchOptions {
+- (BOOL)checkIfAShortcutWasLaunchedAndSetItInAGlobalParam:(NSDictionary *)launchOptions {
     
     BOOL aShortcutWasLaunched = NO;
     

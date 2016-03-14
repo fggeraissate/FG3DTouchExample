@@ -13,6 +13,11 @@
 			<string>Static Subtitle 4</string>
 			<key>UIApplicationShortcutItemIconType</key>
 			<string>UIApplicationShortcutIconTypeAudio</string>
+			<key>UIApplicationShortcutItemUserInfo</key>
+			<dict>
+				<key>firstShorcutKey1</key>
+				<string>firstShortcutKeyValue1</string>
+			</dict>
 		</dict>
 	</array>
 	<key>LSApplicationCategoryType</key>

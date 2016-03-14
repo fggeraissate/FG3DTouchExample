@@ -83,14 +83,15 @@
     [self labelTextWithFloat:0.];
 }
 
+#pragma mark - Touch Handler
+
 - (void)handleTouches:(NSSet<UITouch *> *)touches{
     
     if ([self is3DTouchAvailable]) {
         
         UITouch *touch = [touches.allObjects objectAtIndex:0];
         
-        CGFloat force = touch.force;
-        CGFloat percentage = force/touch.maximumPossibleForce;
+        CGFloat percentage = touch.force/touch.maximumPossibleForce;
         [self labelTextWithFloat:percentage];
     }
 }

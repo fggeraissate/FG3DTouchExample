@@ -70,6 +70,7 @@
               viewControllerForLocation:(CGPoint)location {
     
     PreviewViewController *vcPreview = [PreviewViewController new];
+    [vcPreview.label setText:@"Preview ViewController"];
     
     return vcPreview;
 }
@@ -78,10 +79,7 @@
 - (void)previewingContext:(id<UIViewControllerPreviewing>)previewingContext
      commitViewController:(UIViewController *)viewControllerToCommit {
     
-    PreviewViewController *vcPreview = (PreviewViewController *)viewControllerToCommit;
-    [vcPreview.label setText:@"Preview ViewController"];
-    
-    [self.navigationController pushViewController:vcPreview animated:YES ];
+    [self.navigationController pushViewController:viewControllerToCommit animated:YES];
 }
 
 #pragma mark - Initial Setup 
